@@ -1,2 +1,21 @@
 ---
-# tasks file for mmartinello.swappiness
+- name: Get current swappiness
+  ansible.builtin.command: sysctl vm.swappiness
+  register: current_swappiness
+  changed_when: current_swappiness.rc != 0
+  failed_when: current_swappiness.rc != 0
+
+- name: Set current swappiness
+  ansible.builtin.command: "sysctl -w vm.swappiness={{ swappiness_value }}"
+  register: set_current_swappiness
+  changed_when: set_current_swappiness.rc == 0
+  when: current_swappiness.stdout | regex_search('^vm.swappiness = ([0-9]+)$', '\\1') | first | int != swappiness_value | int
+
+- name: Set swappiness system setting
+  ansible.builtin.template:
+    src: swappiness.conf.j2
+    dest: "/etc/sysctl.d/{{ swappiness_config_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+    unsafe_writes: true

@@ -1,2 +1,6 @@
 ---
-# defaults file for mmartinello.swappiness
+# The swappiness value
+swappiness_value: 10
+
+# Sysctl config file
+swappiness_config_file: swappiness.conf
