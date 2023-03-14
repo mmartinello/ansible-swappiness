@@ -1,0 +1,5 @@
+---
+- name: This role can run only on Linux systems
+  ansible.builtin.fail:
+    msg: This role can run only on Linux systems
+  when: ansible_system != 'Linux'
